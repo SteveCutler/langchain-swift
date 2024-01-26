@@ -4,7 +4,7 @@
 //
 //  Created by 顾艳华 on 1/22/24.
 //
-import llmfarm_core
+//import llmfarm_core
 import Foundation
 
 public class Local: LLM {
