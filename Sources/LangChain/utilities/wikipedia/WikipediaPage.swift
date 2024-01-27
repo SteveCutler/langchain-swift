@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 import NIOPosix
 
-struct WikipediaPage {
+public struct WikipediaPage {
     public let title: String
     public let pageid: Int
     
