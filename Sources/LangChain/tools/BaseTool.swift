@@ -28,6 +28,28 @@ open class BaseTool: NSObject, Tool {
         super.init()
     }
 
+   
+
+     func callStart(tool: BaseTool, input: String, reqId: String) {
+        do {
+            for callback in callbacks {
+                try callback.on_tool_start(tool: tool, input: input, metadata: [BaseTool.TOOL_REQ_ID: reqId, BaseTool.TOOL_NAME_KEY: tool.name()])
+            }
+        } catch {
+            
+        }
+    }
+    
+    func callEnd(tool: BaseTool, output: String, reqId: String, cost: Double) {
+        do {
+            for callback in callbacks {
+                try callback.on_tool_end(tool: tool, output: output, metadata: [BaseTool.TOOL_REQ_ID: reqId, BaseTool.TOOL_COST_KEY: "\(cost)", BaseTool.TOOL_NAME_KEY: tool.name()])
+            }
+        } catch {
+            
+        }
+    }
+
     open func name() -> String {
         fatalError("Subclasses need to implement the `name()` method.")
     }
