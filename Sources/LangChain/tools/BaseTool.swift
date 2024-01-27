@@ -49,19 +49,19 @@ open class BaseTool: NSObject, Tool {
         }
     }
     
-    public func name() -> String {
+    open func name() -> String {
         ""
     }
     
-    public func description() -> String {
+    open func description() -> String {
         ""
     }
     
-    public func _run(args: String) async throws -> String {
+    open func _run(args: String) async throws -> String {
         ""
     }
     
-    public func run(args: String) async throws -> String {
+    open func run(args: String) async throws -> String {
         let reqId = UUID().uuidString
         var cost = 0.0
         let now = Date.now.timeIntervalSince1970
