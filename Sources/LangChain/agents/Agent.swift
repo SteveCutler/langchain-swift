@@ -125,7 +125,7 @@ public class AgentExecutor: DefaultChain {
         if let tool = tools.first(where: { $0.name() == action.action }) {
             print("Selected tool: \(tool.name())")
             do {
-                let observation = try await tool.run(args: action.input)
+                var observation = try await tool.run(args: action.input)
                 print("Tool \(tool.name()) Observation: \(observation)")
                 if tool.returnDirectly {
                     let finish = AgentFinish(final: observation)
@@ -134,7 +134,7 @@ public class AgentExecutor: DefaultChain {
                 return (step, observation)
             } catch {
                 print("Error running tool \(tool.name()): \(error)")
-                let observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
+                var observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
                 return (step, observation)
             }
         } else {
