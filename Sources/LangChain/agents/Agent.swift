@@ -122,6 +122,7 @@ public class AgentExecutor: DefaultChain {
                 print("try call \(tool.name()) tool.")
                 var observation = try await tool.run(args: action.input)
                 if tool.returnDirectly {
+                    print("returning directly")
                     // If returnDirectly is true, return the raw output
                     return (.str(observation), observation)
                 }
