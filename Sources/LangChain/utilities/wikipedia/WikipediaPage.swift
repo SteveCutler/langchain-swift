@@ -11,8 +11,8 @@ import SwiftyJSON
 import NIOPosix
 
 struct WikipediaPage {
-    let title: String
-    let pageid: Int
+    public let title: String
+    public let pageid: Int
     
     func content() async throws -> String {
         let eventLoopGroup = ThreadManager.thread
