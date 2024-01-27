@@ -8,6 +8,7 @@
 import Foundation
 
 public protocol Tool {
+    var returnDirectly: Bool { get }
     // Interface LangChain tools must implement.
     
     func name() -> String
@@ -17,6 +18,9 @@ public protocol Tool {
     func _run(args: String) async throws -> String
 }
 open class BaseTool: NSObject, Tool {
+    public var returnDirectly: Bool {
+        return false // Default behavior
+    }
     public static let TOOL_REQ_ID = "tool_req_id"
     public static let TOOL_COST_KEY = "cost"
     public static let TOOL_NAME_KEY = "tool_name"
