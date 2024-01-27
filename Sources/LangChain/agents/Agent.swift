@@ -153,14 +153,14 @@ public class AgentExecutor: DefaultChain {
             
         }
         var intermediate_steps: [(AgentAction, String)] = []
-        while true {
-           next_step_output = self._take_next_step(
-                name_to_tool_map,
-                color_mapping,
-                inputs,
-                intermediate_steps,
-                run_manager=run_manager,
-           )
+     //   while true {
+      //     next_step_output = self._take_next_step(
+       //         name_to_tool_map,
+        //        color_mapping,
+         //       inputs,
+          //      intermediate_steps,
+           //     run_manager=run_manager,
+          // )
             let next_step_output = await self.take_next_step(input: args, intermediate_steps: intermediate_steps)
             
             switch next_step_output.0 {
