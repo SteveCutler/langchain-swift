@@ -119,7 +119,7 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
     case .action(let action):
         let tool = tools.filter{$0.name() == action.action}.first!
         do {
-            let observation = try await tool.run(args: action.input)
+            var observation = try await tool.run(args: action.input)
             if tool.returnDirectly {
                 // Treat as a final answer and exit the loop
                 let finish = AgentFinish(final: observation)
