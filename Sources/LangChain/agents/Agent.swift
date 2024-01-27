@@ -111,43 +111,43 @@ public class AgentExecutor: DefaultChain {
 //                    )
 //                result.append((agent_action, observation))
 //            return result
-  func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
-        print("take_next_step called with input: \(input)")
+ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
     let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
-        print("Agent Step: \(step)")
+    print("Agent Step: \(step)")
 
-        switch step {
-        case .finish(let finish):
-            print("Agent Finish: \(finish)") // Debugging: Print finish details
-            return (step, finish.final)
+    switch step {
+    case .finish(let finish):
+        print("Agent Finish: \(finish)")
+        return (step, finish.final)
 
-        case .action(let action):
-            print("Agent Action: \(action)") // Debugging: Print action details
-            if let tool = tools.first(where: { $0.name() == action.action }) {
-                print("Selected tool: \(tool.name())")
-                do {
-                    var observation = try await tool.run(args: action.input)
-                    print("Tool \(tool.name()) Observation: \(observation)") // Debugging: Print tool observation
-                    if tool.returnDirectly {
-                        let finish = AgentFinish(final: observation)
-                        return (.finish(finish), observation)
-                    }
-                    return (step, observation)
-                } catch {
-                    print("Error running tool \(tool.name()): \(error)") // Debugging: Print error details
-                    var observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
-                    return (step, observation)
+    case .action(let action):
+        print("Agent Action: \(action)")
+        if let tool = tools.first(where: { $0.name() == action.action }) {
+            print("Selected tool: \(tool.name())")
+            do {
+                let observation = try await tool.run(args: action.input)
+                print("Tool \(tool.name()) Observation: \(observation)")
+                if tool.returnDirectly {
+                    let finish = AgentFinish(final: observation)
+                    return (.finish(finish), observation)
                 }
-            } else {
-                print("No tool found for action: \(action.action)") // Debugging: Print if no tool is found
-                return (step, "No tool found")
+                return (step, observation)
+            } catch {
+                print("Error running tool \(tool.name()): \(error)")
+                let observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
+                return (step, observation)
             }
-
-        default:
-            print("Agent Step: Default case hit") // Debugging: Print if default case is hit
-            return (step, "fail")
+        } else {
+            print("No tool found for action: \(action.action)")
+            return (step, "No tool found")
         }
+
+    default:
+        print("Agent Step: Default case hit")
+        return (step, "fail")
     }
+}
+
 
     
     public override func _call(args: String) async -> (LLMResult?, Parsed) {
