@@ -115,6 +115,10 @@ public class AgentExecutor: DefaultChain {
     let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
     print("Agent Step: \(step)")
 
+     for (index, (action, observation)) in intermediate_steps.enumerated() {
+        print("Intermediate Step \(index): Action - \(action.action), Observation - \(observation)")
+    }
+     
     switch step {
     case .finish(let finish):
         print("Agent Finish: \(finish)")
