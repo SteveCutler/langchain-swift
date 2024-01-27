@@ -111,36 +111,43 @@ public class AgentExecutor: DefaultChain {
 //                    )
 //                result.append((agent_action, observation))
 //            return result
-func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
-    let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
-    switch step {
-    case .finish(let finish):
-        return (step, finish.final)
-    case .action(let action):
-        let tool = tools.filter{$0.name() == action.action}.first!
-        do {
-            var observation = try await tool.run(args: action.input)
-            if tool.returnDirectly {
-                // Treat as a final answer and exit the loop
-                print("return directly")
-                let finish = AgentFinish(final: observation)
-                print("finish =",finish)
-                return (.finish(finish), observation)
-            
-            }
-                if observation.count > 1000 {
-                    observation = String(observation.prefix(1000))
+  func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
+        let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
+        print("Agent Step: \(step)") // Debugging: Print the step
+
+        switch step {
+        case .finish(let finish):
+            print("Agent Finish: \(finish)") // Debugging: Print finish details
+            return (step, finish.final)
+
+        case .action(let action):
+            print("Agent Action: \(action)") // Debugging: Print action details
+            if let tool = tools.first(where: { $0.name() == action.action }) {
+                do {
+                    var observation = try await tool.run(args: action.input)
+                    print("Tool \(tool.name()) Observation: \(observation)") // Debugging: Print tool observation
+                    if tool.returnDirectly {
+                        let finish = AgentFinish(final: observation)
+                        return (.finish(finish), observation)
+                    }
+                    return (step, observation)
+                } catch {
+                    print("Error running tool \(tool.name()): \(error)") // Debugging: Print error details
+                    var observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
+                    return (step, observation)
                 }
-                return (step, observation)
-            } catch {
-                print("\(error.localizedDescription) at run \(tool.name()) tool.")
-                let observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
-                return (step, observation)
+            } else {
+                print("No tool found for action: \(action.action)") // Debugging: Print if no tool is found
+                return (step, "No tool found")
             }
+
         default:
+            print("Agent Step: Default case hit") // Debugging: Print if default case is hit
             return (step, "fail")
         }
     }
+
+    
     public override func _call(args: String) async -> (LLMResult?, Parsed) {
         // chain run -> call -> agent plan -> llm send
         
