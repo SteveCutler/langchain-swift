@@ -112,8 +112,9 @@ public class AgentExecutor: DefaultChain {
 //                result.append((agent_action, observation))
 //            return result
   func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
-        let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
-        print("Agent Step: \(step)") // Debugging: Print the step
+        print("take_next_step called with input: \(input)")
+    let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
+        print("Agent Step: \(step)")
 
         switch step {
         case .finish(let finish):
@@ -123,6 +124,7 @@ public class AgentExecutor: DefaultChain {
         case .action(let action):
             print("Agent Action: \(action)") // Debugging: Print action details
             if let tool = tools.first(where: { $0.name() == action.action }) {
+                print("Selected tool: \(tool.name())")
                 do {
                     var observation = try await tool.run(args: action.input)
                     print("Tool \(tool.name()) Observation: \(observation)") // Debugging: Print tool observation
@@ -150,7 +152,7 @@ public class AgentExecutor: DefaultChain {
     
     public override func _call(args: String) async -> (LLMResult?, Parsed) {
         // chain run -> call -> agent plan -> llm send
-        
+        print("_call method called with args: \(args)")
         // while should_continue and call
 //        let name_to_tool_map = tools.map { [$0.name(): $0] }
         let reqId = UUID().uuidString
