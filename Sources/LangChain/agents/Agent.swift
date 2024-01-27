@@ -188,6 +188,7 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
 //                print("error step.")
                 return (nil, Parsed.error)
             }
+        return (nil, Parsed.error)
         }
     }
 
