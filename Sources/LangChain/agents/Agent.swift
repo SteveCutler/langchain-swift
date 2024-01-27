@@ -111,21 +111,19 @@ public class AgentExecutor: DefaultChain {
 //                    )
 //                result.append((agent_action, observation))
 //            return result
-    func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
-        let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
-        switch step {
-        case .finish(let finish):
-            return (step, finish.final)
-        case .action(let action):
-            let tool = tools.filter{$0.name() == action.action}.first!
-            do {
-                print("try call \(tool.name()) tool.")
-                var observation = try await tool.run(args: action.input)
-                if tool.returnDirectly {
-                    print("returning directly")
-                    // If returnDirectly is true, return the raw output
-              //      return (.rawOutput(observation), observation)
-                }
+func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
+    let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
+    switch step {
+    case .finish(let finish):
+        return (step, finish.final)
+    case .action(let action):
+        let tool = tools.filter{$0.name() == action.action}.first!
+        do {
+            let observation = try await tool.run(args: action.input)
+            if tool.returnDirectly {
+                // Treat as a final answer and exit the loop
+                return (.finish(observation), observation)
+            }
                 if observation.count > 1000 {
                     observation = String(observation.prefix(1000))
                 }
