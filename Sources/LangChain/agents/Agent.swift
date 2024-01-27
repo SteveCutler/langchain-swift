@@ -154,6 +154,9 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
         } catch {
             
         }
+
+            var intermediate_steps: [(AgentAction, String)] = []
+
     while true {
         let next_step_output = await self.take_next_step(input: args, intermediate_steps: intermediate_steps)
 
@@ -198,6 +201,7 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
 
     // Return a default value or error if the loop exits without a return
     return (nil, Parsed.error)
+}
 }
 
 public func initialize_agent(llm: LLM, tools: [BaseTool], callbacks: [BaseCallbackHandler] = []) -> AgentExecutor {
