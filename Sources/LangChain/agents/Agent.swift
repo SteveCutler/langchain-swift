@@ -115,6 +115,10 @@ public class AgentExecutor: DefaultChain {
     let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
     print("Agent Step: \(step)")
 
+      if case let .str(llmOutput) = step {
+        print("LLM Output: \(llmOutput)")
+    }
+     
      for (index, (action, observation)) in intermediate_steps.enumerated() {
         print("Intermediate Step \(index): Action - \(action.action), Observation - \(observation)")
     }
