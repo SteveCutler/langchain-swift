@@ -40,7 +40,7 @@ open class BaseTool: NSObject, Tool {
         fatalError("Subclasses need to implement the `_run(args:)` method.")
     }
 
-    public func run(args: String) async throws -> String {
+   open func run(args: String) async throws -> String {
         let reqId = UUID().uuidString
         var cost = 0.0
         let now = Date.now.timeIntervalSince1970
