@@ -124,7 +124,7 @@ public class AgentExecutor: DefaultChain {
                 if tool.returnDirectly {
                     print("returning directly")
                     // If returnDirectly is true, return the raw output
-                    return (.str(observation), observation)
+                    return (.finish(observation), observation)
                 }
                 if observation.count > 1000 {
                     observation = String(observation.prefix(1000))
@@ -242,6 +242,7 @@ public class Agent {
         if intermediate_steps.isEmpty {
             return ""
         }
+        print("agent scratchpad")
         var thoughts = ""
         for (action, observation) in intermediate_steps {
             thoughts += action.log
