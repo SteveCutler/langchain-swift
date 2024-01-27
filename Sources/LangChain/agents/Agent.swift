@@ -121,6 +121,10 @@ public class AgentExecutor: DefaultChain {
             do {
                 print("try call \(tool.name()) tool.")
                 var observation = try await tool.run(args: action.input)
+                if tool.returnDirectly {
+                    // If returnDirectly is true, return the raw output
+                    return (.str(observation), observation)
+                }
                 if observation.count > 1000 {
                     observation = String(observation.prefix(1000))
                 }
