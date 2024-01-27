@@ -122,7 +122,9 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
             var observation = try await tool.run(args: action.input)
             if tool.returnDirectly {
                 // Treat as a final answer and exit the loop
+                print("return directly")
                 let finish = AgentFinish(final: observation)
+                print("finish =",finish)
                 return (.finish(finish), observation)
             
             }
@@ -152,46 +154,51 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
         } catch {
             
         }
-        var intermediate_steps: [(AgentAction, String)] = []
-     //   while true {
-      //     next_step_output = self._take_next_step(
-       //         name_to_tool_map,
-        //        color_mapping,
-         //       inputs,
-          //      intermediate_steps,
-           //     run_manager=run_manager,
-          // )
-            let next_step_output = await self.take_next_step(input: args, intermediate_steps: intermediate_steps)
-            
-            switch next_step_output.0 {
-            case .finish(let finish):
-                print("Found final answer.")
-                print("intermediate steps: /(intermediate_steps)")
-                do {
+    while true {
+        let next_step_output = await self.take_next_step(input: args, intermediate_steps: intermediate_steps)
+
+        switch next_step_output.0 {
+        case .finish(let finish):
+            // Check if the finish is due to returnDirectly
+            if let tool = tools.first(where: { $0.name() == finish.final }) {
+                if tool.returnDirectly {
+                    // Directly return the final answer if returnDirectly is true
+                    print("Found final answer with returnDirectly.")
+                    return (nil, Parsed.str(finish.final))
+                }
+            }
+            // Handle the regular finish case
+            print("Found final answer.")
+            print("intermediate steps: ", intermediate_steps)
+            do {
                 for callback in self.callbacks {
                     try callback.on_agent_finish(action: finish, metadata: [AgentExecutor.AGENT_REQ_ID: reqId])
                 }
-                } catch {
-                    
-                }
-                return (LLMResult(llm_output: next_step_output.1), Parsed.str(next_step_output.1))
-            case .action(let action):
-                    do {
+            } catch {
+                // Handle any errors during agent finish
+            }
+            return (LLMResult(llm_output: next_step_output.1), Parsed.str(next_step_output.1))
+
+        case .action(let action):
+            // Handle the action case
+            do {
                 for callback in self.callbacks {
                     try callback.on_agent_action(action: action, metadata: [AgentExecutor.AGENT_REQ_ID: reqId])
                 }
-                    } catch {
-                        
-                    }
-                intermediate_steps.append((action, next_step_output.1))
-            default:
-//                print("error step.")
-                return (nil, Parsed.error)
+            } catch {
+                // Handle any errors during agent action
             }
-        return (nil, Parsed.error)
+            intermediate_steps.append((action, next_step_output.1))
+
+        default:
+            // Handle any other cases or errors
+            return (nil, Parsed.error)
         }
     }
 
+    // Return a default value or error if the loop exits without a return
+    return (nil, Parsed.error)
+}
 
 public func initialize_agent(llm: LLM, tools: [BaseTool], callbacks: [BaseCallbackHandler] = []) -> AgentExecutor {
     return AgentExecutor(agent: ZeroShotAgent(llm_chain: LLMChain(llm: llm, prompt: ZeroShotAgent.create_prompt(tools: tools), parser: ZeroShotAgent.output_parser, stop: ["\nObservation: ", "\n\tObservation: "])), tools: tools, callbacks: callbacks)
