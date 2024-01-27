@@ -188,7 +188,7 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
             }
         }
     }
-}
+
 
 public func initialize_agent(llm: LLM, tools: [BaseTool], callbacks: [BaseCallbackHandler] = []) -> AgentExecutor {
     return AgentExecutor(agent: ZeroShotAgent(llm_chain: LLMChain(llm: llm, prompt: ZeroShotAgent.create_prompt(tools: tools), parser: ZeroShotAgent.output_parser, stop: ["\nObservation: ", "\n\tObservation: "])), tools: tools, callbacks: callbacks)
