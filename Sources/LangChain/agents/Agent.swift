@@ -122,7 +122,9 @@ func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) 
             let observation = try await tool.run(args: action.input)
             if tool.returnDirectly {
                 // Treat as a final answer and exit the loop
-                return (.finish(observation), observation)
+                let finish = AgentFinish(final: observation)
+                return (.finish(finish), observation)
+            }
             }
                 if observation.count > 1000 {
                     observation = String(observation.prefix(1000))
