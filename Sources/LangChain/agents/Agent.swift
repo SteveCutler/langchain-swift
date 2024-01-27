@@ -124,7 +124,7 @@ public class AgentExecutor: DefaultChain {
                 if tool.returnDirectly {
                     print("returning directly")
                     // If returnDirectly is true, return the raw output
-                    return (.finish(observation), observation)
+                    return (.rawOutput(observation), observation)
                 }
                 if observation.count > 1000 {
                     observation = String(observation.prefix(1000))
