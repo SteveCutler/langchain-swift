@@ -124,7 +124,7 @@ public class AgentExecutor: DefaultChain {
                 if tool.returnDirectly {
                     print("returning directly")
                     // If returnDirectly is true, return the raw output
-                    return (.rawOutput(observation), observation)
+              //      return (.rawOutput(observation), observation)
                 }
                 if observation.count > 1000 {
                     observation = String(observation.prefix(1000))
@@ -154,18 +154,19 @@ public class AgentExecutor: DefaultChain {
         }
         var intermediate_steps: [(AgentAction, String)] = []
         while true {
-//            next_step_output = self._take_next_step(
-//                name_to_tool_map,
-//                color_mapping,
-//                inputs,
-//                intermediate_steps,
-//                run_manager=run_manager,
-//            )
+           next_step_output = self._take_next_step(
+                name_to_tool_map,
+                color_mapping,
+                inputs,
+                intermediate_steps,
+                run_manager=run_manager,
+           )
             let next_step_output = await self.take_next_step(input: args, intermediate_steps: intermediate_steps)
             
             switch next_step_output.0 {
             case .finish(let finish):
                 print("Found final answer.")
+                print("intermediate steps: /(intermediate_steps)")
                 do {
                 for callback in self.callbacks {
                     try callback.on_agent_finish(action: finish, metadata: [AgentExecutor.AGENT_REQ_ID: reqId])
