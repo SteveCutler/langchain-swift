@@ -8,6 +8,10 @@
 import Foundation
 
 public class TraceCallbackHandler: BaseCallbackHandler {
+
+    public override init() {
+        super.init()
+    }
     func truncate(_ text: String) -> String {
         String(text.prefix(50))
     }
