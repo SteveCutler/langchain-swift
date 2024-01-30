@@ -111,7 +111,7 @@ public class AgentExecutor: DefaultChain {
 //                    )
 //                result.append((agent_action, observation))
 //            return result
- func take_next_step(input: String, intermediate_steps: [(AgentAction, String)]) async -> (Parsed, String) {
+func take_next_step(input: String, intermediate_steps: inout [(AgentAction, String)]) async -> (Parsed, String) {
     let step = await self.agent.plan(input: input, intermediate_steps: intermediate_steps)
     print("Agent Step: \(step)")
 
