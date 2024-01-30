@@ -47,6 +47,7 @@ public class LLMChain: DefaultChain {
     }
     func generate(input_list: [String: String]) async -> LLMResult? {
         let input_prompt = prep_prompts(input_list: input_list)
+        
                print("LLMChain - generate: Input Prompt: \(input_prompt)") // Debug: Log the input prompt
         do {
             //call llm
@@ -67,6 +68,8 @@ public class LLMChain: DefaultChain {
     }
     
     public func plan(input: String, agent_scratchpad: String) async -> Parsed {
+          print("Plan Method Input: \(input)")
+   
                 print("LLMChain - plan: Input: \(input), Agent Scratchpad: \(agent_scratchpad)") // Debug: Log inputs to plan method
         return await apply(input_list: ["question": input, "thought": agent_scratchpad])
     }
