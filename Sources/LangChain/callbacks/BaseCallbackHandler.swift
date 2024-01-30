@@ -8,7 +8,7 @@
 import Foundation
 public class BaseCallbackHandler: LLMManagerMixin, ChainManagerMixin, CallbackManagerMixin, ToolManagerMixin, LoaderManagerMixin {
     // Loader
-    public override init() {
+    public init() {
     }
     public func on_loader_start(type: String, metadata: [String : String]) throws {
         
