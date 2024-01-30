@@ -71,11 +71,12 @@ public class FileCache: BaseCache {
         
     }
     public override func update(prompt: String, return_val: LLMResult) async {
-//        print("🍰 Update \(prompt) at file")
+        print("🍰 Update \(prompt) at file")
         do {
             if let data = prompt.data(using: .utf8) {
                 let base64 = data.base64EncodedString()
                 let cache = LLMCache(key: prompt, value: return_val.llm_output!)
+                print("cache =",cache)
                 try await objectStore!.write(key: base64.sha256(), namespace: "llm_cache", object: cache)
             }
         } catch {
