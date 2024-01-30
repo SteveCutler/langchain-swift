@@ -276,6 +276,7 @@ public class Agent {
 //                    callbacks=callbacks,
 //                    **kwargs,
 //                )
+        print("intermediate steps 3 =",intermediate_steps)
 //                return self.output_parser.parse(output)
         return await llm_chain.plan(input: input, agent_scratchpad: construct_agent_scratchpad(intermediate_steps: intermediate_steps))
     }
