@@ -26,7 +26,7 @@ public class GetLocationTool: BaseTool, CLLocationManagerDelegate {
         """
         Tool of get current location.
         Input must be "here".
-        Returns the current longitude and latitude, such as -78.4:38.5.
+        Returns the current latitude and longitude in the form: "lat, long".
 """
     }
     
