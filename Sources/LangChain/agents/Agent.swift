@@ -283,6 +283,7 @@ public class Agent {
     
     func construct_agent_scratchpad(intermediate_steps: [(AgentAction, String)]) -> String{
         if intermediate_steps.isEmpty {
+            print("intermediate steps [] is empty")
             return ""
         }
         print("agent scratchpad")
