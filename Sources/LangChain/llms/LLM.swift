@@ -31,10 +31,12 @@ public class LLM {
             if let cache = self.cache {
                 if let llmResult = await cache.lookup(prompt: text) {
                     callEnd(output: llmResult.llm_output!, reqId: reqId, cost: 0)
+                    print("llm result = ",llmResult)
                     return llmResult
                 }
             }
             let llmResult = try await _send(text: text, stops: stops)
+            print("llm results = ",llmResult)
             if let cache = self.cache {
                 if llmResult.llm_output != nil {
                     await cache.update(prompt: text, return_val: llmResult)
