@@ -177,7 +177,7 @@ public class AgentExecutor: DefaultChain {
             var intermediate_steps: [(AgentAction, String)] = []
 
     while true {
-        let next_step_output = await self.take_next_step(input: args, intermediate_steps: intermediate_steps)
+        let next_step_output = await self.take_next_step(input: args, intermediate_steps: &intermediate_steps)
 
         switch next_step_output.0 {
         case .finish(let finish):
