@@ -134,6 +134,8 @@ func take_next_step(input: String, intermediate_steps: inout [(AgentAction, Stri
             print("Selected tool: \(tool.name())")
             do {
                 var observation = try await tool.run(args: action.input)
+
+                
                 print("Tool \(tool.name()) Observation: \(observation)")
                 intermediate_steps.append((action, observation)) // Update intermediate steps here
                 print("step1 = ",action," + ",observation)
@@ -143,8 +145,11 @@ func take_next_step(input: String, intermediate_steps: inout [(AgentAction, Stri
                 }
                 return (step, observation)
             } catch {
+                
                 print("Error running tool \(tool.name()): \(error)")
+                 print("Selected Action: \(action.action), Input: \(action.input)")
                 var observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
+                  print("Observation: \(observation)")
                 intermediate_steps.append((action, observation)) // Update intermediate steps her
                 print("step1 = ",action," + ",observation)
                 return (step, observation)
@@ -183,6 +188,9 @@ func take_next_step(input: String, intermediate_steps: inout [(AgentAction, Stri
 
         switch next_step_output.0 {
         case .finish(let finish):
+               print("Final Answer: \(finish.final)")
+        print("Complete Intermediate Steps: \(intermediate_steps)")
+ 
             // Check if the finish is due to returnDirectly
             if let tool = tools.first(where: { $0.name() == finish.final }) {
                 if tool.returnDirectly {
