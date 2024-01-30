@@ -27,7 +27,7 @@ public class GetLocationTool: BaseTool, CLLocationManagerDelegate {
         Tool of get current location.
         Input must be "here".
         Returns the current numberical latitude and longitude values in this format "Latitude, Longitude"
-"""
+        """
     }
     
     public override func _run(args: String) async throws -> String {
