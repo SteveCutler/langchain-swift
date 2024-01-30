@@ -9,8 +9,9 @@ import Foundation
 import SwiftyJSON
 import NIOPosix
 
-struct WikipediaAPIWrapper {
-    func search(query: String) async throws -> [WikipediaPage] {
+public struct WikipediaAPIWrapper {
+    public init() {}
+    public func search(query: String) async throws -> [WikipediaPage] {
         let eventLoopGroup = ThreadManager.thread
         let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
         defer {
@@ -50,7 +51,7 @@ struct WikipediaAPIWrapper {
         }
     }
     
-    func load(query: String) async throws -> [Document] {
+    public func load(query: String) async throws -> [Document] {
         let pages = try await self.search(query: query)
         var docs: [Document] = []
         for page in pages {
