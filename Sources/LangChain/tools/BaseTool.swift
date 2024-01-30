@@ -24,6 +24,7 @@ open class BaseTool: NSObject, Tool {
     public static let TOOL_COST_KEY = "cost"
     public static let TOOL_NAME_KEY = "tool_name"
     public let callbacks: [BaseCallbackHandler]
+   
     public init(callbacks: [BaseCallbackHandler] = []) {
         var cbs: [BaseCallbackHandler] = callbacks
         if Env.addTraceCallbak() && !cbs.contains(where: { item in item is TraceCallbackHandler}) {
@@ -31,7 +32,10 @@ open class BaseTool: NSObject, Tool {
         }
 //        assert(cbs.count == 1)
         self.callbacks = cbs
+        super.init()
     }
+
+    
     func callStart(tool: BaseTool, input: String, reqId: String) {
         do {
             for callback in callbacks {
