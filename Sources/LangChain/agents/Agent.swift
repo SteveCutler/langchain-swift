@@ -136,6 +136,7 @@ func take_next_step(input: String, intermediate_steps: inout [(AgentAction, Stri
                 var observation = try await tool.run(args: action.input)
                 print("Tool \(tool.name()) Observation: \(observation)")
                 intermediate_steps.append((action, observation)) // Update intermediate steps here
+                print("step1 = ",action," + ",observation)
                 if tool.returnDirectly {
                     let finish = AgentFinish(final: observation)
                     return (.finish(finish), observation)
@@ -145,6 +146,7 @@ func take_next_step(input: String, intermediate_steps: inout [(AgentAction, Stri
                 print("Error running tool \(tool.name()): \(error)")
                 var observation = try! await InvalidTool(tool_name: tool.name()).run(args: action.input)
                 intermediate_steps.append((action, observation)) // Update intermediate steps her
+                print("step1 = ",action," + ",observation)
                 return (step, observation)
             }
         } else {
