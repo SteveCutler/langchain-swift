@@ -45,7 +45,7 @@ public class GetLocationTool: BaseTool, CLLocationManagerDelegate {
         let longitude = currLocation.coordinate.longitude
         let latitude = currLocation.coordinate.latitude
         // signal
-        locationContinuation?.resume(returning: "\(longitude):\(latitude)")
+        locationContinuation?.resume(returning: "\(latitude), \(longitude)")
     }
     
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
