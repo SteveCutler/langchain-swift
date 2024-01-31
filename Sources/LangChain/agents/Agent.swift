@@ -121,8 +121,8 @@ public class AgentExecutor: DefaultChain {
             do {
                 print("try call \(tool.name()) tool.")
                 var observation = try await tool.run(args: action.input)
-                if observation.count > 1000 {
-                    observation = String(observation.prefix(1000))
+                if observation.count > 5000 {
+                    observation = String(observation.prefix(5000))
                 }
                 return (step, observation)
             } catch {
