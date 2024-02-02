@@ -19,7 +19,7 @@ public struct WikipediaAPIWrapper {
             try? httpClient.syncShutdown()
         }
         
-        let baseURL = "http://en.wikipedia.org/w/api.php"
+        let baseURL = "https://en.wikipedia.org/w/api.php"
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
             URLQueryItem(name: "srlimit", value: "3"),
