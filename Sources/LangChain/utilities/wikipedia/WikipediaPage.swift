@@ -86,7 +86,7 @@ extension WikipediaAPIWrapper {
 
         // Assuming response.body.collect() is available and correct
         // Convert HTTPClientResponse.Body to Data
-        let bodyData = Data(buffer: try await response.body.collect())
+        let bodyData = Data(buffer: try await response.body.collect(upTo: 1_024 * 1024))
         let json = try JSON(data: bodyData)
         guard let pageContent = json["query"]["pages"]["\(pageId)"]["extract"].string else {
             throw NSError(domain: "WikipediaAPIWrapperError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse page content"])
