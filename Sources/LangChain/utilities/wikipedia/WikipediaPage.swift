@@ -14,7 +14,7 @@ public struct WikipediaPage {
     public let title: String
     public let pageid: Int
     
-    func content() async throws -> String {
+   public func content() async throws -> String {
         let eventLoopGroup = ThreadManager.thread
         let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
         defer {
@@ -25,9 +25,10 @@ public struct WikipediaPage {
         let baseURL = "http://en.wikipedia.org/w/api.php"
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
-            URLQueryItem(name: "prop", value: "extracts|revisions"),
-            URLQueryItem(name: "rvprop", value: "ids"),
-            URLQueryItem(name: "titles", value: self.title),
+            URLQueryItem(name: "prop", value: "extracts"),
+            URLQueryItem(name: "exintro", value: "true"),
+            URLQueryItem(name: "explaintext", value: "true"),
+            URLQueryItem(name: "pageids", value: "\(self.pageid)"),
             URLQueryItem(name: "action", value: "query"),
             URLQueryItem(name: "format", value: "json"),
         ]
