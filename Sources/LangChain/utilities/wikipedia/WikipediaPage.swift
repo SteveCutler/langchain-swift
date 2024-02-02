@@ -72,7 +72,7 @@ extension WikipediaAPIWrapper {
             URLQueryItem(name: "exsectionformat", value: "wiki") // Use "wiki" for wikicode; alternatives: "plain", "raw"
         ]
 
-        guard let url = components.url else {
+         guard let url = components.url else {
             throw URLError(.badURL)
         }
 
@@ -80,12 +80,14 @@ extension WikipediaAPIWrapper {
         request.method = .GET
 
         let response = try await httpClient.execute(request, timeout: .seconds(30))
-        guard response.status == .ok, let body = response.body else {
+        guard response.status == .ok else {
             throw URLError(.badServerResponse)
         }
 
-        let data = Data(buffer: body)
-        let json = try JSON(data: data)
+        // Assuming response.body.collect() is available and correct
+        // Convert HTTPClientResponse.Body to Data
+        let bodyData = Data(buffer: try await response.body.collect())
+        let json = try JSON(data: bodyData)
         guard let pageContent = json["query"]["pages"]["\(pageId)"]["extract"].string else {
             throw NSError(domain: "WikipediaAPIWrapperError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse page content"])
         }
@@ -93,4 +95,3 @@ extension WikipediaAPIWrapper {
         return pageContent
     }
 }
-
