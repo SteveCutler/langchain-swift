@@ -23,6 +23,7 @@ public class LLM {
     let cache: BaseCache?
     
     public func generate(text: String, stops: [String] = []) async -> LLMResult? {
+    print("calling generate")
         let reqId = UUID().uuidString
         var cost = 0.0
         let now = Date.now.timeIntervalSince1970
@@ -44,6 +45,7 @@ public class LLM {
             }
             cost = Date.now.timeIntervalSince1970 - now
             if !llmResult.stream {
+                print("calling callEnd")
                 callEnd(output: llmResult.llm_output!, reqId: reqId, cost: cost)
             } else {
                 callEnd(output: "[LLM is streamable]", reqId: reqId, cost: cost)
