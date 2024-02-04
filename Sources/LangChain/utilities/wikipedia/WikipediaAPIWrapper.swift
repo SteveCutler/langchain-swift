@@ -108,6 +108,7 @@ public struct WikipediaAPIWrapper {
         
         let response = try await AF.request(baseURL, method: .get, parameters: parameters).serializingData().value
         let json = try JSON(data: response)
+         print("raw wiki section json response: ",json)
         let sectionContent = json["parse"]["text"].stringValue // Adjust based on actual JSON structure
         let cleanedSectionContent = sectionContent.strippingHTML()
 
