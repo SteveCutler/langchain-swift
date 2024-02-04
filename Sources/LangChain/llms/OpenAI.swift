@@ -5,9 +5,9 @@
 //  Created by 顾艳华 on 2023/6/10.
 //
 
+
 import Foundation
-import NIOPosix
-import AsyncHTTPClient
+import Alamofire
 import OpenAIKit
 
 public class OpenAI: LLM {
@@ -26,25 +26,31 @@ public class OpenAI: LLM {
         
         if let apiKey = env["OPENAI_API_KEY"] {
             let baseUrl = env["OPENAI_API_BASE"] ?? "api.openai.com"
-            let eventLoopGroup = ThreadManager.thread
-
-            let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-            defer {
-                // it's important to shutdown the httpClient after all requests are done, even if one failed. See: https://github.com/swift-server/async-http-client
-                try? httpClient.syncShutdown()
-            }
-            let configuration = Configuration(apiKey: apiKey, api: API(scheme: .https, host: baseUrl))
-
-            let openAIClient = OpenAIKit.Client(httpClient: httpClient, configuration: configuration)
+            let headers: HTTPHeaders = [
+                "Authorization": "Bearer \(apiKey)",
+                "Content-Type": "application/json"
+            ]
             
-            let completion = try await openAIClient.chats.create(model: model, messages: [.user(content: text)], temperature: temperature, stops: stops)
-            return LLMResult(llm_output: completion.choices.first!.message.content)
+            let parameters: [String: Any] = [
+                "model": model.rawValue,
+                "messages": [["content": text]],
+                "temperature": temperature,
+                "stops": stops
+            ]
+            
+            let url = "https://\(baseUrl)/v1/chats"
+            
+            do {
+                let response = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).serializingDecodable(OpenAIKit.ChatCompletion.self).value
+                return LLMResult(llm_output: response.choices.first!.message.content)
+            } catch {
+                print("Request failed with error: \(error)")
+                throw error
+            }
         } else {
             print("Please set openai api key.")
             return LLMResult(llm_output: "Please set openai api key.")
         }
-        
     }
-    
-    
 }
+
