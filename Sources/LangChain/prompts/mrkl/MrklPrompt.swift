@@ -23,6 +23,7 @@ Thought: I now know the final answer
 Final Answer: the final answer to the original input question
 """
 public let SUFFIX = """
+If the first tool you selected doesn't provide the answer after 2 attempts, choose a different tool.
 Begin!
 
 Question: {question}
