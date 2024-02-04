@@ -28,6 +28,7 @@ public class OpenAI: LLM {
             let baseUrl = env["OPENAI_API_BASE"] ?? "api.openai.com"
             let eventLoopGroup = ThreadManager.thread
 
+            let organization = ""
             let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
             defer {
                 // it's important to shutdown the httpClient after all requests are done, even if one failed. See: https://github.com/swift-server/async-http-client
@@ -38,9 +39,10 @@ public class OpenAI: LLM {
 
             let urlSession = URLSession(configuration: .default)
             let configuration = Configuration(apiKey: apiKey, organization: organization)
+            //let configuration = Configuration(apiKey: apiKey, api: API(scheme: .https, host: baseUrl))
             let openAIClient = OpenAIKit.Client(session: urlSession, configuration: configuration)
         
-     //       let configuration = Configuration(apiKey: apiKey, api: API(scheme: .https, host: baseUrl))
+        
 
      //       let openAIClient = OpenAIKit.Client(httpClient: httpClient, configuration: configuration)
             
