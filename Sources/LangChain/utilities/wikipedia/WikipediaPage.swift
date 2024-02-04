@@ -13,6 +13,7 @@ import NIOPosix
 public struct WikipediaPage {
     public let title: String
     public let pageid: Int
+    public let extract: String // Add this line
     
    public func content() async throws -> String {
         let eventLoopGroup = ThreadManager.thread
