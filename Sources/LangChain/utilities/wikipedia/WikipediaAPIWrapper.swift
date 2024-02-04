@@ -8,6 +8,7 @@ import AsyncHTTPClient
 import Foundation
 import SwiftyJSON
 import NIOPosix
+import Alamofire
 
   public func search(query: String) async throws -> [WikipediaPage] {
         let baseURL = "https://en.wikipedia.org/w/api.php"
@@ -55,4 +56,4 @@ import NIOPosix
     }
 
 
-}
+
