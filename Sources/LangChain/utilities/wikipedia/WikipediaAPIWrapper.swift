@@ -43,7 +43,7 @@ import Alamofire
             print("Request failed with error: \(error)")
             throw error
         }
-    }
+    
     
     public func load(query: String) async throws -> [Document] {
         let pages = try await self.search(query: query)
@@ -54,6 +54,7 @@ import Alamofire
         }
         return docs
     }
+  }
 
 
 
