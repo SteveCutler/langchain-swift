@@ -69,7 +69,7 @@ do {
             .serializingDecodable(Completion.self).value
         
         // Here, you process the response to extract the content you need
-        let content = response.choices.first?.text ?? "No content available"
+        let content = response.choices.first!.message.content ?? "No content available"
         
         // Assuming you're not using streaming for this response
         return LLMResult(llm_output: content)
