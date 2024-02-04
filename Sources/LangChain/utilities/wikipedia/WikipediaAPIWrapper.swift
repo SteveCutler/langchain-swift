@@ -96,7 +96,7 @@ public struct WikipediaAPIWrapper {
 }
    
    public func loadSectionContent(pageId: Int, sectionIndex: Int) async throws -> String {
-     //   let baseURL = "https://en.wikipedia.org/w/api.php"
+        let baseURL = "https://en.wikipedia.org/w/api.php"
         let parameters: Parameters = [
             "action": "parse",
             "pageid": pageId,
@@ -106,18 +106,19 @@ public struct WikipediaAPIWrapper {
             "formatversion": 2 // Use the latest format version for cleaner output
         ]
         
-        let baseURL = "https://en.wikipedia.org/api/rest_v1/page"
-    let sectionURL = "\(baseURL)/segment/\(pageId)/\(sectionIndex)"
+     //   let baseURL = "https://en.wikipedia.org/api/rest_v1/page"
+   // let sectionURL = "\(baseURL)/segment/\(pageId)/\(sectionIndex)"
 
     do {
         // Fetch the section content using Alamofire
-        let response = try await AF.request(sectionURL, method: .get).serializingString().value
-        
-        // Assuming the response directly contains the plain text content
-        return response
-    } catch {
-        print("Request failed with error: \(error)")
-        throw error
+        let response = try await AF.request(baseURL, method: .get, parameters: parameters).serializingData().value
+        let json = try JSON(data: response)
+        let sectionContent = json["parse"]["text"].stringValue // Adjust based on actual JSON structure
+        let cleanedSectionContent = sectionContent.strippingHTML()
+
+        return cleanedSectionContent
+
+    }
     }
 }
 }
