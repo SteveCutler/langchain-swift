@@ -65,11 +65,11 @@ public class OpenAI {
         ]
         
         do {
-            let response: completion = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+            let response: Completion = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
                 .serializingDecodable(Completion.self).value
             
             // Assuming you want the text of the first choice
-            if let firstChoiceText = completion.choices.first!.message.content {
+            if let firstChoiceText = response.choices.first!.message.content {
                 return firstChoiceText
             } else {
                 return "No content available"
