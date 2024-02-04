@@ -64,15 +64,15 @@ public class OpenAI {
             // Add other parameters as needed
         ]
         
-        do {
-            let response = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
-                .serializingDecodable(Completion.self).value
-            
-            // Assuming you want the text of the first choice
-            if let firstChoiceText = response.choices.first!.message.content {
-                return  LLMResult(llm_output: firstChoiceText)
-            } else {
-                return "No content available"
+do {
+        let response = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+            .serializingDecodable(Completion.self).value
+        
+        // Here, you process the response to extract the content you need
+        let content = response.choices.first?.text ?? "No content available"
+        
+        // Assuming you're not using streaming for this response
+        return OpenAIResult(llm_output: content)
             }
         } catch {
             throw error
