@@ -59,40 +59,42 @@ public struct WikipediaAPIWrapper {
     }
 
    public func loadIntroAndSections(pageId: Int) async throws -> (intro: String, sections: [String]) {
-        let introURL = "https://en.wikipedia.org/w/api.php"
-        let sectionsURL = introURL // Same base URL, different parameters
-        
-        // Parameters for fetching the introductory content
-        let introParameters: Parameters = [
-            "action": "query",
-            "prop": "extracts",
-            "exintro": "",
-            "explaintext": "",
-            "pageids": pageId,
-            "format": "json",
-        ]
-        
-        // Parameters for fetching the section titles
-        let sectionsParameters: Parameters = [
-            "action": "parse",
-            "pageid": pageId,
-            "prop": "sections",
-            "format": "json",
-        ]
-        
-        // Fetch introductory content
-        let introResponse = try await AF.request(introURL, method: .get, parameters: introParameters).serializingData().value
-        let introJson = try JSON(data: introResponse)
-        let introText = introJson["query"]["pages"]["\(pageId)"]["extract"].stringValue
-        
-        // Fetch section titles
-        let sectionsResponse = try await AF.request(sectionsURL, method: .get, parameters: sectionsParameters).serializingData().value
-        let sectionsJson = try JSON(data: sectionsResponse)
-        let sectionTitles = sectionsJson["parse"]["sections"].arrayValue.map { $0["line"].stringValue }
-        
-        return (introText, sectionTitles)
+    let introURL = "https://en.wikipedia.org/w/api.php"
+    let sectionsURL = introURL // Same base URL, different parameters
+    
+    // Parameters for fetching the introductory content
+    let introParameters: Parameters = [
+        "action": "query",
+        "prop": "extracts",
+        "exintro": "",
+        "explaintext": "",
+        "pageids": pageId,
+        "format": "json",
+    ]
+    
+    // Parameters for fetching the section titles
+    let sectionsParameters: Parameters = [
+        "action": "parse",
+        "pageid": pageId,
+        "prop": "sections",
+        "format": "json",
+    ]
+    
+    // Fetch introductory content
+    let introResponse = try await AF.request(introURL, method: .get, parameters: introParameters).serializingData().value
+    let introJson = try JSON(data: introResponse)
+    let introText = introJson["query"]["pages"]["\(pageId)"]["extract"].stringValue
+    
+    // Fetch section titles
+    let sectionsResponse = try await AF.request(sectionsURL, method: .get, parameters: sectionsParameters).serializingData().value
+    let sectionsJson = try JSON(data: sectionsResponse)
+    let sectionTitles = sectionsJson["parse"]["sections"].arrayValue.enumerated().map { index, section in
+        "\(index + 1) \(section["line"].stringValue)" // Numbering starts at 1
     }
-
+    
+    return (introText, sectionTitles)
+}
+   
    public func loadSectionContent(pageId: Int, sectionIndex: Int) async throws -> String {
         let baseURL = "https://en.wikipedia.org/w/api.php"
         let parameters: Parameters = [
