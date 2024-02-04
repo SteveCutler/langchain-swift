@@ -11,6 +11,7 @@ import NIOPosix
 import Alamofire
 
 public struct WikipediaAPIWrapper {
+   public init() {}
   public func search(query: String) async throws -> [WikipediaPage] {
         let baseURL = "https://en.wikipedia.org/w/api.php"
         let parameters: Parameters = [
