@@ -10,6 +10,18 @@ import Foundation
 import Alamofire
 import OpenAIKit
 
+struct ChatResponse: Decodable {
+    let choices: [Choice]
+    
+    struct Choice: Decodable {
+        let message: Message
+        
+        struct Message: Decodable {
+            let content: String
+        }
+    }
+}
+
 public class OpenAI: LLM {
     
     let temperature: Double
@@ -21,22 +33,32 @@ public class OpenAI: LLM {
         super.init(callbacks: callbacks, cache: cache)
     }
     
- public func send(text: String, stops: [String] = []) async throws -> LLMResult {
+public class OpenAI {
+    let temperature: Double
+    let model: String // Assuming model is a String. Adjust according to the actual type of `ModelID`
+    
+    public init(temperature: Double = 0.0, model: String) {
+        self.temperature = temperature
+        self.model = model
+    }
+    
+    public func send(text: String, stops: [String] = []) async throws -> String {
         let env = Env.loadEnv()
         
         guard let apiKey = env["OPENAI_API_KEY"], let baseUrl = env["OPENAI_API_BASE"] ?? "api.openai.com" else {
             print("Please set openai api key.")
-            return LLMResult(llm_output: "Please set openai api key.")
+            return "Please set openai api key."
         }
         
-        let url = "https://\(baseUrl)/v1/..." // Adjust the URL path according to the actual API endpoint
+        // Adjust the URL path according to the actual API endpoint
+        let url = "https://\(baseUrl)/v1/chats" // Example endpoint, adjust as necessary
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(apiKey)"
             // Add other headers as needed
         ]
         let parameters: Parameters = [
             "model": model,
-            "prompt": text,
+            "messages": [["role": "user", "content": text]],
             "temperature": temperature,
             // Add other parameters as needed
         ]
@@ -44,13 +66,17 @@ public class OpenAI: LLM {
         do {
             let response: ChatResponse = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
                 .serializingDecodable(ChatResponse.self).value
-            // Use the response
-            return LLMResult(llm_output: response.someProperty) // Adjust according to how you want to use the response
+            
+            // Assuming you want the content of the first choice's message
+            if let firstChoiceContent = response.choices.first?.message.content {
+                return firstChoiceContent
+            } else {
+                return "No content available"
+            }
         } catch {
             print("Request failed with error: \(error)")
             throw error
+        }
     }
 }
-
-
 
