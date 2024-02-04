@@ -36,6 +36,7 @@ public class LLM {
                 }
             }
             let llmResult = try await _send(text: text, stops: stops)
+            print("text =",text)
             print("llmResult =",llmResult)
             if let cache = self.cache {
                 if llmResult.llm_output != nil {
@@ -45,6 +46,7 @@ public class LLM {
             cost = Date.now.timeIntervalSince1970 - now
             if !llmResult.stream {
                 print("calling callEnd")
+                print("llm result =",llmResult.llm_output)
                 callEnd(output: llmResult.llm_output!, reqId: reqId, cost: cost)
             } else {
                 callEnd(output: "[LLM is streamable]", reqId: reqId, cost: cost)
