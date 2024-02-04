@@ -109,11 +109,23 @@ public struct WikipediaAPIWrapper {
         let response = try await AF.request(baseURL, method: .get, parameters: parameters).serializingData().value
         let json = try JSON(data: response)
         let sectionContent = json["parse"]["text"].stringValue // Adjust based on actual JSON structure
-        
-        return sectionContent
+        let cleanedSectionContent = sectionContent.strippingHTML()
+
+        return cleanedSectionContent
+
+      
     }
   
 }
+
+extension String {
+    func strippingHTML() -> String {
+        let range = NSRange(location: 0, length: self.utf16.count)
+        let regex = try! NSRegularExpression(pattern: "<.*?>", options: [])
+        return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
+    }
+}
+
   
 
 
