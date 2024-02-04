@@ -44,7 +44,7 @@ public class OpenAI {
     
     public func send(text: String, stops: [String] = []) async throws -> String {
         let env = Env.loadEnv()
-        
+        print("entering send function")
         guard let apiKey = env["OPENAI_API_KEY"], let baseUrl = env["OPENAI_API_BASE"] else {
             print("Please set openai api key.")
             return "Please set openai api key."
@@ -52,6 +52,7 @@ public class OpenAI {
         
         // Adjust the URL path according to the actual API endpoint
         let url = "https://\(baseUrl)/v1/chats" // Example endpoint, adjust as necessary
+        print("url =",url)
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(apiKey)"
             // Add other headers as needed
@@ -66,14 +67,16 @@ public class OpenAI {
         do {
             let response: ChatResponse = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
                 .serializingDecodable(ChatResponse.self).value
-            print("reponse =",response)
+            print("response =",response)
             
             // Assuming you want the content of the first choice's message
             if let firstChoiceContent = response.choices.first?.message.content {
                 print("first choice content =",firstChoiceContent)
+                return firstChoiceContent
              //   return LLMResult(llm_output: firstChoiceContent)
-                return LLMResult(llm_output: response.choices.first!.message.content)
+             //  return LLMResult(llm_output: response.choices.first!.message.content)
             } else {
+                print("no content available")
                 return "No content available"
             }
         } catch {
