@@ -116,7 +116,13 @@ public struct WikipediaAPIWrapper {
         let sectionContent = json["parse"]["text"].stringValue // Adjust based on actual JSON structure
         let cleanedSectionContent = sectionContent.strippingHTML()
 
-        return cleanedSectionContent
+        let regex = try NSRegularExpression(pattern: "<!--.*?-->", options: .dotMatchesLineSeparators)
+         let range = NSRange(location: 0, length: cleanedSectionContent.utf16.count)
+         let finalCleanedContent = regex.stringByReplacingMatches(in: cleanedSectionContent, options: [], range: range, withTemplate: "")
+
+         return finalCleanedContent
+
+      
 
     }
     }
