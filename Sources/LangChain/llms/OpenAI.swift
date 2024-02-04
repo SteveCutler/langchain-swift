@@ -35,13 +35,13 @@ public class OpenAI: LLM {
             }
 
 
-            let urlSession = URLSession(configuration: .default)
-            let configuration = Configuration(apiKey: apiKey, organization: organization)
-            let openAIClient = OpenAIKit.Client(session: urlSession, configuration: configuration)
+       //     let urlSession = URLSession(configuration: .default)
+       //     let configuration = Configuration(apiKey: apiKey, organization: organization)
+       //     let openAIClient = OpenAIKit.Client(session: urlSession, configuration: configuration)
             
-      //      let configuration = Configuration(apiKey: apiKey, api: API(scheme: .https, host: baseUrl))
+            let configuration = Configuration(apiKey: apiKey, api: API(scheme: .https, host: baseUrl))
             
-       //     let openAIClient = OpenAIKit.Client(httpClient: httpClient, configuration: configuration)
+            let openAIClient = OpenAIKit.Client(httpClient: httpClient, configuration: configuration)
             
             let completion = try await openAIClient.chats.create(model: model, messages: [.user(content: text)], temperature: temperature, stops: stops)
             return LLMResult(llm_output: completion.choices.first!.message.content)
