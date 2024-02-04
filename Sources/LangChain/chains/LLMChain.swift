@@ -49,8 +49,10 @@ public class LLMChain: DefaultChain {
         let input_prompt = prep_prompts(input_list: input_list)
         do {
             //call llm
+            print("calling generate2")
             let llmResult = await self.llm.generate(text: input_prompt, stops:  stop)
             try await llmResult?.setOutput()
+            print("llmResult =",llmResult)
             return llmResult
         } catch {
             print("LLM chain generate \(error.localizedDescription)")
@@ -59,11 +61,13 @@ public class LLMChain: DefaultChain {
     }
     
     public func apply(input_list: [String: String]) async -> Parsed {
+        print("calling generate")
         let response = await generate(input_list: input_list)
         return create_outputs(output: response)
     }
     
     public func plan(input: String, agent_scratchpad: String) async -> Parsed {
+        print("calling plan")
         return await apply(input_list: ["question": input, "thought": agent_scratchpad])
     }
     
