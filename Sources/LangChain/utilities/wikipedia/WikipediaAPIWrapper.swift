@@ -9,46 +9,38 @@ import Foundation
 import SwiftyJSON
 import NIOPosix
 
-public struct WikipediaAPIWrapper {
-    public init() {}
-    public func search(query: String) async throws -> [WikipediaPage] {
-        let eventLoopGroup = ThreadManager.thread
-        let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        defer {
-            // it's important to shutdown the httpClient after all requests are done, even if one failed. See: https://github.com/swift-server/async-http-client
-            try? httpClient.syncShutdown()
-        }
-        
+  public func search(query: String) async throws -> [WikipediaPage] {
         let baseURL = "https://en.wikipedia.org/w/api.php"
-        var components = URLComponents(string: baseURL)!
-        components.queryItems = [
-            
-            URLQueryItem(name: "srlimit", value: "3"),
-            URLQueryItem(name: "list", value: "search"),
-            URLQueryItem(name: "srsearch", value: query),
-            URLQueryItem(name: "action", value: "query"),
-            URLQueryItem(name: "format", value: "json"),
+        let parameters: Parameters = [
+            "action": "query",
+            "format": "json",
+            "list": "search",
+            "srsearch": query,
+            "utf8": 1,
+            "srlimit": 5, // Adjust the limit as needed
+            "prop": "extracts", // Request extracts
+            "exintro": "", // Get introductory content
+            "explaintext": "", // Return extracts in plain text
+            "exsentences": 3 // Limit the extract to first few sentences
         ]
-//        print(components.url!.absoluteString)
-        var request = HTTPClientRequest(url: components.url!.absoluteString)
-        request.method = .GET
-        
-        let response = try await httpClient.execute(request, timeout: .seconds(30))
-        if response.status == .ok {
-            let str = String(buffer: try await response.body.collect(upTo: 1024 * 1024))
-//            print(str)
-            let json = try JSON(data: str.data(using: .utf8)!)
+
+        do {
+            let response = try await AF.request(baseURL, method: .get, parameters: parameters).serializingData().value
+            let json = try JSON(data: response)
             var wikis: [WikipediaPage] = []
             let searchResults = json["query"]["search"].arrayValue
-            
+
             for wiki in searchResults {
-                wikis.append(WikipediaPage(title: wiki["title"].stringValue, pageid: wiki["pageid"].intValue, extract: wiki["extract"].stringValue))
+                wikis.append(WikipediaPage(
+                    title: wiki["title"].stringValue,
+                    pageid: wiki["pageid"].intValue,
+                    extract: wiki["snippet"].stringValue // Use "snippet" or adjust based on actual JSON key for extracts
+                ))
             }
             return wikis
-        } else {
-            // handle remote error
-            print("http code is not 200.")
-            return []
+        } catch {
+            print("Request failed with error: \(error)")
+            throw error
         }
     }
     
@@ -61,4 +53,6 @@ public struct WikipediaAPIWrapper {
         }
         return docs
     }
+
+
 }
