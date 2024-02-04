@@ -36,7 +36,7 @@ public class LLM {
                 }
             }
             let llmResult = try await _send(text: text, stops: stops)
-            print("llmResult =",llmResult
+            print("llmResult =",llmResult)
             if let cache = self.cache {
                 if llmResult.llm_output != nil {
                     await cache.update(prompt: text, return_val: llmResult)
