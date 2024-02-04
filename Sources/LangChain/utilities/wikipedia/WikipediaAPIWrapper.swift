@@ -43,6 +43,7 @@ import Alamofire
             print("Request failed with error: \(error)")
             throw error
         }
+  }
     
     
     public func load(query: String) async throws -> [Document] {
@@ -54,7 +55,7 @@ import Alamofire
         }
         return docs
     }
-  }
+  
 
 
 
