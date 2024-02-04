@@ -10,7 +10,7 @@ import SwiftyJSON
 import NIOPosix
 import Alamofire
 
-struct WikipediaAPIWrapper {
+public struct WikipediaAPIWrapper {
   public func search(query: String) async throws -> [WikipediaPage] {
         let baseURL = "https://en.wikipedia.org/w/api.php"
         let parameters: Parameters = [
