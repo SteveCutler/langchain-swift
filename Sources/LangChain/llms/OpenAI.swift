@@ -66,9 +66,11 @@ public class OpenAI {
         do {
             let response: ChatResponse = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
                 .serializingDecodable(ChatResponse.self).value
+            print("reponse =",response)
             
             // Assuming you want the content of the first choice's message
             if let firstChoiceContent = response.choices.first?.message.content {
+                print("first choice content =",firstChoiceContent)
                 return firstChoiceContent
             } else {
                 return "No content available"
