@@ -64,20 +64,18 @@ public class OpenAI {
             // Add other parameters as needed
         ]
         
-         do {
-        let response: ChatResponse = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
-            .serializingDecodable(ChatResponse.self).value
-        
-        // Assuming you want the content of the first choice's message
-        if let firstChoiceContent = response.choices.first?.message.content {
-            print("firstchoicecontent =",firstChoiceContent)
-            return firstChoiceContent
-        } else {
-            print("no content available")
-            return "no content available"
+        do {
+            let response: Completion = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+                .serializingDecodable(Completion.self).value
+            
+            // Assuming you want the text of the first choice
+            if let firstChoiceText = response.choices.first?.text {
+                return firstChoiceText
+            } else {
+                return "No content available"
+            }
+        } catch {
+            throw error
         }
-        
     }
-}
-}
 }
