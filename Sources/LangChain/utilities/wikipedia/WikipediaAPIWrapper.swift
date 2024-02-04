@@ -42,7 +42,7 @@ public struct WikipediaAPIWrapper {
             let searchResults = json["query"]["search"].arrayValue
             
             for wiki in searchResults {
-                wikis.append(WikipediaPage(title: wiki["title"].stringValue, pageid: wiki["pageid"].intValue))
+                wikis.append(WikipediaPage(title: wiki["title"].stringValue, pageid: wiki["pageid"].intValue, extract: wiki["extract"].stringValue))
             }
             return wikis
         } else {
