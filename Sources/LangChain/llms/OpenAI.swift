@@ -45,7 +45,7 @@ public class OpenAI {
     public func send(text: String, stops: [String] = []) async throws -> String {
         let env = Env.loadEnv()
         
-        guard let apiKey = env["OPENAI_API_KEY"], let baseUrl = env["OPENAI_API_BASE"] ?? "api.openai.com" else {
+        guard let apiKey = env["OPENAI_API_KEY"], let baseUrl = env["OPENAI_API_BASE"] else {
             print("Please set openai api key.")
             return "Please set openai api key."
         }
@@ -78,5 +78,6 @@ public class OpenAI {
             throw error
         }
     }
+}
 }
 
