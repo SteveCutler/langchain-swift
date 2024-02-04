@@ -32,7 +32,7 @@ public class OpenAI: LLM {
             ]
             
             let parameters: [String: Any] = [
-                "model": model.rawValue,
+                "model": model,
                 "messages": [["content": text]],
                 "temperature": temperature,
                 "stops": stops
