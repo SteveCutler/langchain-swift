@@ -71,7 +71,7 @@ public class OpenAI {
             // Assuming you want the content of the first choice's message
             if let firstChoiceContent = response.choices.first?.message.content {
                 print("first choice content =",firstChoiceContent)
-                return firstChoiceContent
+                return LLMResult(llm_output: firstChoiceContent)
             } else {
                 return "No content available"
             }
