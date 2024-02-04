@@ -230,6 +230,7 @@ public class Agent {
 //                    **kwargs,
 //                )
 //                return self.output_parser.parse(output)
+        print("calling llm chain plan")
         return await llm_chain.plan(input: input, agent_scratchpad: construct_agent_scratchpad(intermediate_steps: intermediate_steps))
     }
     
