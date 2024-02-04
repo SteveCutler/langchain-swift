@@ -120,6 +120,7 @@ public struct WikipediaAPIWrapper {
         throw error
     }
 }
+}
 
 extension String {
     func strippingHTML() -> String {
