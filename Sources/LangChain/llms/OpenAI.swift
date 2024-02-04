@@ -37,12 +37,14 @@ public class OpenAI: LLM {
                 "temperature": temperature,
                 "stops": stops
             ]
+
+            
             
             let url = "https://\(baseUrl)/v1/chats"
             
             do {
                 let response = try await AF.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).serializingDecodable(OpenAIKit.ChatCompletion.self).value
-                return LLMResult(llm_output: response.choices.first!.message.content)
+                return LLMResult(llm_output: completion.choices.first!.message.content)
             } catch {
                 print("Request failed with error: \(error)")
                 throw error
