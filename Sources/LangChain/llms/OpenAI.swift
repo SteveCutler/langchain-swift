@@ -72,10 +72,11 @@ do {
         let content = response.choices.first?.text ?? "No content available"
         
         // Assuming you're not using streaming for this response
-        return OpenAIResult(llm_output: content)
+        return LLMResult(llm_output: content)
     } catch {
         print("Request failed with error: \(error)")
         throw error
     }
+}
 }
 }
