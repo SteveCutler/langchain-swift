@@ -69,8 +69,8 @@ public class OpenAI {
                 .serializingDecodable(Completion.self).value
             
             // Assuming you want the text of the first choice
-            if let firstChoiceText = response.choices.first!.message.content {
-                return firstChoiceText
+            if let firstChoiceText = response.choices.first!.text.content {
+                return  LLMResult(llm_output: firstChoiceText)
             } else {
                 return "No content available"
             }
