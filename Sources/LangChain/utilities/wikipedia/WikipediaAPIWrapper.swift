@@ -120,7 +120,7 @@ public struct WikipediaAPIWrapper {
 
     }
     }
-}
+
 }
 
 extension String {
