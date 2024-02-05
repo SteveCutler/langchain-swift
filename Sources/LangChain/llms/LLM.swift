@@ -51,7 +51,7 @@ public class LLM {
             } else {
                 callEnd(output: "[LLM is streamable]", reqId: reqId, cost: cost)
             }
-            return llmResult!
+            return llmResult
         } catch {
             callCatch(error: error, reqId: reqId, cost: cost)
             print("LLM generate \(error.localizedDescription)")
