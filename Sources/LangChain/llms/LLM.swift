@@ -46,12 +46,12 @@ public class LLM {
             cost = Date.now.timeIntervalSince1970 - now
             if !llmResult.stream {
                 print("calling callEnd")
-                print("llm result =",llmResult.llm_output)
+                print("llm result2 =",llmResult.llm_output)
                 callEnd(output: llmResult.llm_output!, reqId: reqId, cost: cost)
             } else {
                 callEnd(output: "[LLM is streamable]", reqId: reqId, cost: cost)
             }
-            return llmResult
+            return llmResult.llm_output
         } catch {
             callCatch(error: error, reqId: reqId, cost: cost)
             print("LLM generate \(error.localizedDescription)")
